@@ -5,6 +5,8 @@ const request = require("request");
 const app = express();
 var response = {};
 var stat = true;
+var input;
+var description;
 
 app.use(bodyParser.urlencoded({extended:true}));
 
@@ -39,10 +41,22 @@ console.log("hello");
 // });
 
 app.post("/",function(req,res) {
-  if(req.body.city == "Hello"){
-  var city = req.body.city;
-  var baseURL= "http://api.openweathermap.org/data/2.5/weather?q=";
-  var key = "&APPID=218f955661efb740eb8338b5409903c2";
+  //if(req.body.city == "Hello"){
+  if(req.body.city!=null){
+    var city = req.body.city;
+    input=req.body.city;
+     description= "Displays the weather of "+input;
+    var baseURL= "http://api.openweathermap.org/data/2.5/weather?q=";
+    var key = "&APPID=218f955661efb740eb8338b5409903c2";
+  }
+  else{
+       var city = req.body.sport;
+       input=req.body.sport;
+       var baseURL= "https://www.thesportsdb.com/api/v1/json/1/search_all_leagues.php?c=USA&s=";
+       var key = "&APPID=4013053";
+       description= "Displays the National League of "+input;
+  }
+
   var finalURL = baseURL + city + key;
   request(finalURL,function(error,response,body){
 
@@ -51,10 +65,10 @@ app.post("/",function(req,res) {
                 response = {
                     "date": new Date(),
                     "params": {
-                        "city" : req.body.city,
+                        "city" : input,
                     },
-                    "response": data.main,
-                    "description": "returns the current weather of the city"
+                    "response": data,
+                    "description": description
   };
     res.send(response)
 
@@ -62,7 +76,7 @@ app.post("/",function(req,res) {
 
   });
 
-}
+//}
 
 });
 
